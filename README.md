@@ -1,2 +1,2 @@
 # relight
-reloght functional prototype
+relight functional prototype
