@@ -3,6 +3,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Relight Prototype</title>
+<meta name="theme-color" content="#08090d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Relight">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap">
 <style>
 :root{--ground:#08090d;--ink:#f1eff6;color-scheme:dark}
@@ -13,6 +18,8 @@ html,body{height:100%;margin:0;background:var(--ground);color:var(--ink);overflo
 .real .rl{border-radius:0}
 .real .rl .sb,.real .rl .hi{display:none}
 .real .rl .rst{left:12px;top:10px}
+html,body{height:100dvh}
+.real .rl .rst{left:50%;top:46px;width:22px;height:22px;margin-left:-11px}
 #cover{position:fixed;inset:0;z-index:1000;background:radial-gradient(120% 80% at 50% 45%,#17132a 0%,#0a0912 55%,#07070b 100%);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease}
 #cover.gone{opacity:0;pointer-events:none}
 #cover i{width:6px;height:6px;border-radius:50%;background:#efe9ff;box-shadow:0 0 18px 4px rgba(210,195,248,.8);animation:cv 1.6s ease-in-out infinite}
@@ -1231,9 +1238,16 @@ host.__rl = { S, G, act, enterUni, enterCon, startGen, ORDER, cam, get level() {
 (function(){
   var host=document.getElementById('host'),sc=document.getElementById('scale'),fit=document.getElementById('fit'),cover=document.getElementById('cover');
   function size(){
-    var w=fit.clientWidth,h=fit.clientHeight,k=Math.min(w/390,h/844);
-    document.documentElement.classList.toggle('real',w<=520);
-    sc.style.transform='scale('+k.toFixed(4)+')';
+    var w=fit.clientWidth,h=fit.clientHeight,real=w<=520;
+    document.documentElement.classList.toggle('real',real);
+    if(real){
+      /* on phones the fake status bar (top 44) and home bar (bottom 14) are hidden, so fit only the 786px band in between */
+      var k=Math.min(w/390,h/786);
+      sc.style.transform='translateY('+(-18*k).toFixed(2)+'px) scale('+k.toFixed(4)+')';
+    }else{
+      var k=Math.min(w/390,h/844);
+      sc.style.transform='scale('+k.toFixed(4)+')';
+    }
   }
   size();window.addEventListener('resize',size);
   function boot(){
